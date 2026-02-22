@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Animated Login & Registration</title>
-    <link rel="stylesheet" href="style.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <style>
       * {
@@ -201,6 +200,28 @@ form h1 { font-size: 36px; color: #fff; text-align: center; margin-bottom: 20px;
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        const container = document.querySelector('.container');
+const registerBtn = document.querySelector('.register-btn');
+const loginBtn = document.querySelector('.login-btn');
+const registerLink = document.querySelector('.register-link');
+const loginLink = document.querySelector('.login-link');
+
+registerBtn.onclick = () => {
+    container.classList.add('active');
+};
+
+loginBtn.onclick = () => {
+    container.classList.remove('active');
+};
+
+registerLink.onclick = () => {
+    container.classList.add('active');
+};
+
+loginLink.onclick = () => {
+    container.classList.remove('active');
+};
+    </script>
 </body>
 </html>
