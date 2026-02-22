@@ -3,144 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Animated Login & Registration</title>
+    <title>Animated Login & Registration | IMANZI Labs</title>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <style>
-      * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-}
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background: #000; /* Dark background as seen in your image */
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
 
-.container {
-    position: relative;
-    width: 850px;
-    height: 550px;
-    background: #1a1a1a;
-    border: 2px solid #e46033;
-    box-shadow: 0 0 25px #e46033; /* The signature glow */
-    border-radius: 30px;
-    overflow: hidden;
-}
+        body {
+            display: flex;
+            flex-direction: column; /* Stack container and footer */
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #000;
+            overflow: hidden;
+        }
 
-.form-box {
-    position: absolute;
-    width: 50%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 0 40px;
-    transition: .6s ease-in-out;
-    z-index: 1;
-}
+        .container {
+            position: relative;
+            width: 850px;
+            height: 550px;
+            background: #1a1a1a;
+            border: 2px solid #e46033;
+            box-shadow: 0 0 25px #e46033;
+            border-radius: 30px;
+            overflow: hidden;
+        }
 
-/* Specific positioning for Register */
-.container .form-box.login { left: 0; }
-.container .form-box.register { left: -50%; opacity: 0; }
+        .form-box {
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 40px;
+            transition: .6s ease-in-out;
+            z-index: 1; /* Keeping forms behind the initial toggle-panel if needed */
+        }
 
-/* State when "active" class is applied via JS */
-.container.active .form-box.login { left: 50%; opacity: 0; }
-.container.active .form-box.register { left: 50%; opacity: 1; }
+        .container .form-box.login { left: 0; }
+        .container .form-box.register { left: -50%; opacity: 0; visibility: hidden;}
 
-form h1 { font-size: 36px; color: #fff; text-align: center; margin-bottom: 20px; }
+        /* Transition States */
+        .container.active .form-box.login { left: 50%; opacity: 0; visibility: hidden; }
+        .container.active .form-box.register { left: 50%; opacity: 1; visibility: visible; z-index: 5; }
 
-.input-box {
-    position: relative;
-    width: 100%;
-    height: 50px;
-    margin: 25px 0;
-}
+        form h1 { font-size: 36px; color: #fff; text-align: center; margin-bottom: 20px; }
 
-.input-box input {
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    border: none;
-    outline: none;
-    border-bottom: 2px solid #fff;
-    font-size: 16px;
-    color: #fff;
-    padding-right: 28px;
-    transition: .5s;
-}
+        .input-box {
+            position: relative;
+            width: 100%;
+            height: 50px;
+            margin: 25px 0;
+        }
 
-.input-box i {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
-    font-size: 20px;
-    color: #fff;
-}
+        .input-box input {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            border-bottom: 2px solid #fff;
+            font-size: 16px;
+            color: #fff;
+            padding-right: 28px;
+            transition: .5s;
+        }
 
-.btn {
-    width: 100%;
-    height: 45px;
-    background: #e46033;
-    border: none;
-    border-radius: 40px;
-    box-shadow: 0 0 10px rgba(0,0,0,.1);
-    cursor: pointer;
-    font-size: 16px;
-    color: #fff;
-    font-weight: 600;
-    margin-top: 20px;
-}
+        .input-box i {
+            position: absolute;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: #fff;
+        }
 
-.link-txt { font-size: 14.5px; color: #fff; text-align: center; margin: 20px 0 10px; }
-.link-txt a { color: #e46033; text-decoration: none; font-weight: 600; }
+        .btn {
+            width: 100%;
+            height: 45px;
+            background: #e46033;
+            border: none;
+            border-radius: 40px;
+            box-shadow: 0 0 10px rgba(0,0,0,.1);
+            cursor: pointer;
+            font-size: 16px;
+            color: #fff;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: .3s;
+        }
 
-/* The Animated Sliding Panel */
-.toggle-box {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-}
+        .btn:hover { background: #ff7b4d; }
 
-.toggle-box::before {
-    content: '';
-    position: absolute;
-    width: 300%;
-    height: 100%;
-    background: linear-gradient(45deg, #1a1a1a, #e46033);
-    left: -250%;
-    border-radius: 150px;
-    z-index: 2;
-    transition: 1.2s ease-in-out;
-}
+        .link-txt { font-size: 14.5px; color: #fff; text-align: center; margin: 20px 0 10px; }
+        .link-txt a { color: #e46033; text-decoration: none; font-weight: 600; }
 
-.container.active .toggle-box::before { left: -100%; }
+        /* The Animated Sliding Panel */
+        .toggle-box {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
 
-.toggle-panel {
-    position: absolute;
-    width: 50%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    z-index: 2;
-    transition: .6s ease-in-out;
-}
+        .toggle-box::before {
+            content: '';
+            position: absolute;
+            width: 300%;
+            height: 100%;
+            background: linear-gradient(45deg, #1a1a1a, #e46033);
+            left: -250%;
+            border-radius: 150px;
+            z-index: 2;
+            transition: 1.2s ease-in-out;
+        }
 
-.toggle-left { left: 0; transition-delay: .6s; }
-.container.active .toggle-left { left: -50%; transition-delay: 0s; }
+        .container.active .toggle-box::before { left: -100%; }
 
-.toggle-right { right: -50%; transition-delay: 0s; }
-.container.active .toggle-right { right: 0; transition-delay: .6s; }
+        .toggle-panel {
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            z-index: 3; /* Above the 'before' element */
+            transition: .6s ease-in-out;
+            text-align: center;
+            padding: 0 30px;
+        }
+
+        .toggle-left { left: 0; transition-delay: .6s; }
+        .container.active .toggle-left { left: -50%; transition-delay: 0s; }
+
+        .toggle-right { right: -50%; transition-delay: 0s; }
+        .container.active .toggle-right { right: 0; transition-delay: .6s; }
+
+        .toggle-panel p { margin: 20px 0; font-size: 15px; }
+        .toggle-panel .btn { background: transparent; border: 2px solid #fff; }
+
+        /* Branding Footer */
+        .footer {
+            margin-top: 30px;
+            color: #fff;
+            text-align: center;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        .footer span { color: #e46033; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -190,38 +212,40 @@ form h1 { font-size: 36px; color: #fff; text-align: center; margin-bottom: 20px;
             <div class="toggle-panel toggle-left">
                 <h1>WELCOME BACK!</h1>
                 <p>We are happy to have you with us again. If you need anything, we are here to help.</p>
-                <button class="btn register-btn">Register</button>
+                <button class="btn register-btn">Go to Register</button>
             </div>
             <div class="toggle-panel toggle-right">
                 <h1>HELLO, FRIEND!</h1>
                 <p>Enter your personal details to use all of site features.</p>
-                <button class="btn login-btn">Login</button>
+                <button class="btn login-btn">Go to Login</button>
             </div>
         </div>
     </div>
 
+    <div class="footer">
+        <p>&copy; 2026 Powered by <span>IMANZI Labs</span> | Developed by <span>Steven IMANZI</span></p>
+    </div>
+
     <script>
         const container = document.querySelector('.container');
-const registerBtn = document.querySelector('.register-btn');
-const loginBtn = document.querySelector('.login-btn');
-const registerLink = document.querySelector('.register-link');
-const loginLink = document.querySelector('.login-link');
+        const registerBtn = document.querySelector('.register-btn');
+        const loginBtn = document.querySelector('.login-btn');
+        const registerLink = document.querySelector('.register-link');
+        const loginLink = document.querySelector('.login-link');
 
-registerBtn.onclick = () => {
-    container.classList.add('active');
-};
+        // Transitions using the buttons in the toggle panels
+        registerBtn.onclick = () => { container.classList.add('active'); };
+        loginBtn.onclick = () => { container.classList.remove('active'); };
 
-loginBtn.onclick = () => {
-    container.classList.remove('active');
-};
-
-registerLink.onclick = () => {
-    container.classList.add('active');
-};
-
-loginLink.onclick = () => {
-    container.classList.remove('active');
-};
+        // Transitions using the "Sign Up" / "Login" links inside the forms
+        registerLink.onclick = (e) => { 
+            e.preventDefault();
+            container.classList.add('active'); 
+        };
+        loginLink.onclick = (e) => { 
+            e.preventDefault();
+            container.classList.remove('active'); 
+        };
     </script>
 </body>
 </html>
