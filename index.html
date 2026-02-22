@@ -3,22 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IMANZI Labs | Secure Portal</title>
+    <title>IMANZI Labs | Fixed Portal</title>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <style>
         :root {
-            --primary-blue: #2a52be;
-            --accent-glow: #4169e1;
-            --dark-bg: #0f172a;
+            --primary: #1e40af; /* Professional Royal Blue */
+            --bg-dark: #0f172a;
             --card-bg: #1e293b;
-            --text-main: #f8fafc;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
@@ -27,24 +25,25 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: var(--dark-bg);
-            color: var(--text-main);
+            background: var(--bg-dark);
         }
 
+        /* Container is the fixed anchor */
         .container {
             position: relative;
-            width: 850px;
+            width: 800px;
+            max-width: 90vw;
             height: 500px;
             background: var(--card-bg);
             border-radius: 20px;
-            box-shadow: 0 0 30px rgba(42, 82, 190, 0.3);
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
-        /* Forms Layout */
+        /* Form Box Logic - Each occupies exactly 50% */
         .form-box {
             position: absolute;
+            top: 0;
             width: 50%;
             height: 100%;
             display: flex;
@@ -52,162 +51,167 @@
             justify-content: center;
             padding: 40px;
             transition: all 0.6s ease-in-out;
+        }
+
+        /* LOGIN: Always sits on the left half (0 to 50%) */
+        .login-box {
+            left: 0;
+            z-index: 2;
+            opacity: 1;
+        }
+
+        /* REGISTER: Always sits on the right half (50% to 100%) */
+        .register-box {
+            left: 50%;
+            z-index: 1;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* ACTIVE STATE LOGIC */
+        /* When active, we slide the forms slightly or change opacity to prevent conflict */
+        .container.active .login-box {
+            opacity: 0;
+            visibility: hidden;
             z-index: 1;
         }
 
-        .login { left: 0; }
-        .register { left: 100%; opacity: 0; }
-
-        .container.active .login { left: -50%; opacity: 0; }
-        .container.active .register { left: 50%; opacity: 1; z-index: 2; }
-
-        h1 { font-size: 2.2rem; margin-bottom: 20px; color: var(--text-main); }
-
-        /* Input Styling */
-        .input-group {
-            position: relative;
-            margin: 20px 0;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        .container.active .register-box {
+            opacity: 1;
+            visibility: visible;
+            z-index: 2;
         }
 
-        .input-group input {
-            width: 100%;
-            padding: 10px 30px 10px 0;
-            background: transparent;
-            border: none;
-            outline: none;
-            color: white;
-            font-size: 1rem;
-        }
-
-        .input-group i {
-            position: absolute;
-            right: 5px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--accent-glow);
-        }
-
-        /* Button Styling */
-        .main-btn {
-            width: 100%;
-            padding: 12px;
-            background: var(--primary-blue);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 10px;
-        }
-
-        .main-btn:hover {
-            background: var(--accent-glow);
-            box-shadow: 0 0 15px var(--primary-blue);
-        }
-
-        /* Toggle Panel (The Sliding Part) */
+        /* The Sliding Toggle Panel */
         .toggle-container {
             position: absolute;
             top: 0;
-            left: 50%;
+            left: 50%; /* Starts on the right half */
             width: 50%;
             height: 100%;
             overflow: hidden;
             transition: all 0.6s ease-in-out;
-            z-index: 10;
+            z-index: 100;
         }
 
-        .container.active .toggle-container { transform: translateX(-100%); }
+        /* Move the toggle container to the left side when active */
+        .container.active .toggle-container {
+            transform: translateX(-100%);
+        }
 
         .toggle {
-            background: linear-gradient(to right, #1e3a8a, var(--primary-blue));
-            color: white;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            height: 100%;
+            width: 200%; /* Double width to accommodate both panels */
+            color: #fff;
             position: relative;
             left: -100%;
-            height: 100%;
-            width: 200%;
             transform: translateX(0);
             transition: all 0.6s ease-in-out;
         }
 
-        .container.active .toggle { transform: translateX(50%); }
+        .container.active .toggle {
+            transform: translateX(50%);
+        }
 
         .toggle-panel {
             position: absolute;
             width: 50%;
             height: 100%;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
-            padding: 0 40px;
+            padding: 0 30px;
             text-align: center;
-            top: 0;
-            transition: all 0.6s ease-in-out;
         }
 
-        .toggle-left { transform: translateX(-200%); }
+        .toggle-left { transform: translateX(-20%); transition: all 0.6s; }
         .container.active .toggle-left { transform: translateX(0); }
 
-        .toggle-right { right: 0; transform: translateX(0); }
-        .container.active .toggle-right { transform: translateX(200%); }
+        .toggle-right { right: 0; transform: translateX(0); transition: all 0.6s; }
+        .container.active .toggle-right { transform: translateX(20%); }
+
+        /* UI Elements Styling */
+        h1 { color: #fff; margin-bottom: 15px; font-size: 28px; }
+        p { color: #cbd5e1; font-size: 14px; margin-bottom: 20px; }
+        
+        .input-group {
+            position: relative;
+            margin: 15px 0;
+            border-bottom: 1px solid #475569;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px 0;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #fff;
+        }
+
+        .main-btn {
+            background: var(--primary);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            margin-top: 10px;
+        }
 
         .ghost-btn {
             background: transparent;
-            border: 1px solid white;
-            padding: 10px 30px;
+            border: 2px solid #fff;
+            color: #fff;
+            padding: 10px 25px;
             border-radius: 8px;
-            color: white;
             cursor: pointer;
-            margin-top: 20px;
+            font-weight: 600;
         }
 
-        /* Footer Branding */
         .footer {
-            margin-top: 25px;
-            font-size: 0.9rem;
-            color: #94a3b8;
+            margin-top: 20px;
+            color: #64748b;
+            font-size: 13px;
         }
 
-        .footer b { color: var(--primary-blue); }
+        .footer b { color: var(--primary); }
     </style>
 </head>
 <body>
 
     <div class="container" id="container">
-        <div class="form-box register">
-            <form>
-                <h1>Create Account</h1>
-                <div class="input-group">
-                    <input type="text" placeholder="Username" required>
-                    <i class='bx bxs-user'></i>
-                </div>
-                <div class="input-group">
-                    <input type="email" placeholder="Email" required>
-                    <i class='bx bxs-envelope'></i>
-                </div>
-                <div class="input-group">
-                    <input type="password" placeholder="Password" required>
-                    <i class='bx bxs-lock-alt'></i>
-                </div>
-                <button type="submit" class="main-btn">Register</button>
-            </form>
-        </div>
-
-        <div class="form-box login">
+        
+        <div class="form-box login-box">
             <form>
                 <h1>Sign In</h1>
                 <div class="input-group">
                     <input type="text" placeholder="Username" required>
-                    <i class='bx bxs-user'></i>
                 </div>
                 <div class="input-group">
                     <input type="password" placeholder="Password" required>
-                    <i class='bx bxs-lock-alt'></i>
                 </div>
-                <button type="submit" class="main-btn">Login</button>
+                <button type="button" class="main-btn">Login</button>
+            </form>
+        </div>
+
+        <div class="form-box register-box">
+            <form>
+                <h1>Sign Up</h1>
+                <div class="input-group">
+                    <input type="text" placeholder="Full Name" required>
+                </div>
+                <div class="input-group">
+                    <input type="email" placeholder="Email" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" placeholder="Password" required>
+                </div>
+                <button type="button" class="main-btn">Register</button>
             </form>
         </div>
 
@@ -215,34 +219,29 @@
             <div class="toggle">
                 <div class="toggle-panel toggle-left">
                     <h1>Welcome Back!</h1>
-                    <p>Log in to continue your journey with UniLink</p>
-                    <button class="ghost-btn" id="loginBtn">Sign In</button>
+                    <p>Enter your details to use all features</p>
+                    <button class="ghost-btn" id="login">Sign In</button>
                 </div>
                 <div class="toggle-panel toggle-right">
                     <h1>Hello, Friend!</h1>
-                    <p>Start building your future with IMANZI Labs</p>
-                    <button class="ghost-btn" id="registerBtn">Sign Up</button>
+                    <p>Register with your personal details</p>
+                    <button class="ghost-btn" id="register">Sign Up</button>
                 </div>
             </div>
         </div>
     </div>
 
     <footer class="footer">
-        <p>&copy; 2026 Powered by <b>IMANZI Labs</b> | Developed by <b>Steven IMANZI</b></p>
+        &copy; 2026 Powered by <b>IMANZI Labs</b> | Developed by <b>Steven IMANZI</b>
     </footer>
 
     <script>
         const container = document.getElementById('container');
-        const registerBtn = document.getElementById('registerBtn');
-        const loginBtn = document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('register');
+        const loginBtn = document.getElementById('login');
 
-        registerBtn.addEventListener('click', () => {
-            container.classList.add('active');
-        });
-
-        loginBtn.addEventListener('click', () => {
-            container.classList.remove('active');
-        });
+        registerBtn.onclick = () => container.classList.add('active');
+        loginBtn.onclick = () => container.classList.remove('active');
     </script>
 </body>
 </html>
