@@ -3,39 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Animated Login & Registration | IMANZI Labs</title>
+    <title>IMANZI Labs | Secure Portal</title>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        :root {
+            --primary-blue: #2a52be;
+            --accent-glow: #4169e1;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+        }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
             display: flex;
-            flex-direction: column; /* Stack container and footer */
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: #000;
-            overflow: hidden;
+            background: var(--dark-bg);
+            color: var(--text-main);
         }
 
         .container {
             position: relative;
             width: 850px;
-            height: 550px;
-            background: #1a1a1a;
-            border: 2px solid #e46033;
-            box-shadow: 0 0 25px #e46033;
-            border-radius: 30px;
+            height: 500px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(42, 82, 190, 0.3);
             overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        /* Forms Layout */
         .form-box {
             position: absolute;
             width: 50%;
@@ -43,209 +50,199 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 0 40px;
-            transition: .6s ease-in-out;
-            z-index: 1; /* Keeping forms behind the initial toggle-panel if needed */
+            padding: 40px;
+            transition: all 0.6s ease-in-out;
+            z-index: 1;
         }
 
-        .container .form-box.login { left: 0; }
-        .container .form-box.register { left: -50%; opacity: 0; visibility: hidden;}
+        .login { left: 0; }
+        .register { left: 100%; opacity: 0; }
 
-        /* Transition States */
-        .container.active .form-box.login { left: 50%; opacity: 0; visibility: hidden; }
-        .container.active .form-box.register { left: 50%; opacity: 1; visibility: visible; z-index: 5; }
+        .container.active .login { left: -50%; opacity: 0; }
+        .container.active .register { left: 50%; opacity: 1; z-index: 2; }
 
-        form h1 { font-size: 36px; color: #fff; text-align: center; margin-bottom: 20px; }
+        h1 { font-size: 2.2rem; margin-bottom: 20px; color: var(--text-main); }
 
-        .input-box {
+        /* Input Styling */
+        .input-group {
             position: relative;
-            width: 100%;
-            height: 50px;
-            margin: 25px 0;
+            margin: 20px 0;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
         }
 
-        .input-box input {
+        .input-group input {
             width: 100%;
-            height: 100%;
+            padding: 10px 30px 10px 0;
             background: transparent;
             border: none;
             outline: none;
-            border-bottom: 2px solid #fff;
-            font-size: 16px;
-            color: #fff;
-            padding-right: 28px;
-            transition: .5s;
+            color: white;
+            font-size: 1rem;
         }
 
-        .input-box i {
+        .input-group i {
             position: absolute;
+            right: 5px;
             top: 50%;
-            right: 0;
             transform: translateY(-50%);
-            font-size: 20px;
-            color: #fff;
+            color: var(--accent-glow);
         }
 
-        .btn {
+        /* Button Styling */
+        .main-btn {
             width: 100%;
-            height: 45px;
-            background: #e46033;
+            padding: 12px;
+            background: var(--primary-blue);
             border: none;
-            border-radius: 40px;
-            box-shadow: 0 0 10px rgba(0,0,0,.1);
-            cursor: pointer;
-            font-size: 16px;
-            color: #fff;
+            border-radius: 8px;
+            color: white;
             font-weight: 600;
-            margin-top: 20px;
-            transition: .3s;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
         }
 
-        .btn:hover { background: #ff7b4d; }
+        .main-btn:hover {
+            background: var(--accent-glow);
+            box-shadow: 0 0 15px var(--primary-blue);
+        }
 
-        .link-txt { font-size: 14.5px; color: #fff; text-align: center; margin: 20px 0 10px; }
-        .link-txt a { color: #e46033; text-decoration: none; font-weight: 600; }
-
-        /* The Animated Sliding Panel */
-        .toggle-box {
+        /* Toggle Panel (The Sliding Part) */
+        .toggle-container {
             position: absolute;
-            width: 100%;
-            height: 100%;
             top: 0;
-            left: 0;
-        }
-
-        .toggle-box::before {
-            content: '';
-            position: absolute;
-            width: 300%;
+            left: 50%;
+            width: 50%;
             height: 100%;
-            background: linear-gradient(45deg, #1a1a1a, #e46033);
-            left: -250%;
-            border-radius: 150px;
-            z-index: 2;
-            transition: 1.2s ease-in-out;
+            overflow: hidden;
+            transition: all 0.6s ease-in-out;
+            z-index: 10;
         }
 
-        .container.active .toggle-box::before { left: -100%; }
+        .container.active .toggle-container { transform: translateX(-100%); }
+
+        .toggle {
+            background: linear-gradient(to right, #1e3a8a, var(--primary-blue));
+            color: white;
+            position: relative;
+            left: -100%;
+            height: 100%;
+            width: 200%;
+            transform: translateX(0);
+            transition: all 0.6s ease-in-out;
+        }
+
+        .container.active .toggle { transform: translateX(50%); }
 
         .toggle-panel {
             position: absolute;
             width: 50%;
             height: 100%;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: #fff;
-            z-index: 3; /* Above the 'before' element */
-            transition: .6s ease-in-out;
+            flex-direction: column;
+            padding: 0 40px;
             text-align: center;
-            padding: 0 30px;
+            top: 0;
+            transition: all 0.6s ease-in-out;
         }
 
-        .toggle-left { left: 0; transition-delay: .6s; }
-        .container.active .toggle-left { left: -50%; transition-delay: 0s; }
+        .toggle-left { transform: translateX(-200%); }
+        .container.active .toggle-left { transform: translateX(0); }
 
-        .toggle-right { right: -50%; transition-delay: 0s; }
-        .container.active .toggle-right { right: 0; transition-delay: .6s; }
+        .toggle-right { right: 0; transform: translateX(0); }
+        .container.active .toggle-right { transform: translateX(200%); }
 
-        .toggle-panel p { margin: 20px 0; font-size: 15px; }
-        .toggle-panel .btn { background: transparent; border: 2px solid #fff; }
+        .ghost-btn {
+            background: transparent;
+            border: 1px solid white;
+            padding: 10px 30px;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            margin-top: 20px;
+        }
 
-        /* Branding Footer */
+        /* Footer Branding */
         .footer {
-            margin-top: 30px;
-            color: #fff;
-            text-align: center;
-            font-size: 14px;
-            letter-spacing: 1px;
+            margin-top: 25px;
+            font-size: 0.9rem;
+            color: #94a3b8;
         }
 
-        .footer span { color: #e46033; font-weight: 600; }
+        .footer b { color: var(--primary-blue); }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="form-box login">
-            <form action="#">
-                <h1>Login</h1>
-                <div class="input-box">
-                    <input type="text" placeholder="Username" required>
-                    <i class='bx bxs-user'></i>
-                </div>
-                <div class="input-box">
-                    <input type="password" placeholder="Password" required>
-                    <i class='bx bxs-lock-alt'></i>
-                </div>
-                <button type="submit" class="btn">Login</button>
-                <div class="link-txt">
-                    <p>Don't have an account? <a href="#" class="register-link">Sign Up</a></p>
-                </div>
-            </form>
-        </div>
-
+    <div class="container" id="container">
         <div class="form-box register">
-            <form action="#">
-                <h1>Registration</h1>
-                <div class="input-box">
+            <form>
+                <h1>Create Account</h1>
+                <div class="input-group">
                     <input type="text" placeholder="Username" required>
                     <i class='bx bxs-user'></i>
                 </div>
-                <div class="input-box">
+                <div class="input-group">
                     <input type="email" placeholder="Email" required>
                     <i class='bx bxs-envelope'></i>
                 </div>
-                <div class="input-box">
+                <div class="input-group">
                     <input type="password" placeholder="Password" required>
                     <i class='bx bxs-lock-alt'></i>
                 </div>
-                <button type="submit" class="btn">Register</button>
-                <div class="link-txt">
-                    <p>Already have an account? <a href="#" class="login-link">Login</a></p>
-                </div>
+                <button type="submit" class="main-btn">Register</button>
             </form>
         </div>
 
-        <div class="toggle-box">
-            <div class="toggle-panel toggle-left">
-                <h1>WELCOME BACK!</h1>
-                <p>We are happy to have you with us again. If you need anything, we are here to help.</p>
-                <button class="btn register-btn">Go to Register</button>
-            </div>
-            <div class="toggle-panel toggle-right">
-                <h1>HELLO, FRIEND!</h1>
-                <p>Enter your personal details to use all of site features.</p>
-                <button class="btn login-btn">Go to Login</button>
+        <div class="form-box login">
+            <form>
+                <h1>Sign In</h1>
+                <div class="input-group">
+                    <input type="text" placeholder="Username" required>
+                    <i class='bx bxs-user'></i>
+                </div>
+                <div class="input-group">
+                    <input type="password" placeholder="Password" required>
+                    <i class='bx bxs-lock-alt'></i>
+                </div>
+                <button type="submit" class="main-btn">Login</button>
+            </form>
+        </div>
+
+        <div class="toggle-container">
+            <div class="toggle">
+                <div class="toggle-panel toggle-left">
+                    <h1>Welcome Back!</h1>
+                    <p>Log in to continue your journey with UniLink</p>
+                    <button class="ghost-btn" id="loginBtn">Sign In</button>
+                </div>
+                <div class="toggle-panel toggle-right">
+                    <h1>Hello, Friend!</h1>
+                    <p>Start building your future with IMANZI Labs</p>
+                    <button class="ghost-btn" id="registerBtn">Sign Up</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="footer">
-        <p>&copy; 2026 Powered by <span>IMANZI Labs</span> | Developed by <span>Steven IMANZI</span></p>
-    </div>
+    <footer class="footer">
+        <p>&copy; 2026 Powered by <b>IMANZI Labs</b> | Developed by <b>Steven IMANZI</b></p>
+    </footer>
 
     <script>
-        const container = document.querySelector('.container');
-        const registerBtn = document.querySelector('.register-btn');
-        const loginBtn = document.querySelector('.login-btn');
-        const registerLink = document.querySelector('.register-link');
-        const loginLink = document.querySelector('.login-link');
+        const container = document.getElementById('container');
+        const registerBtn = document.getElementById('registerBtn');
+        const loginBtn = document.getElementById('loginBtn');
 
-        // Transitions using the buttons in the toggle panels
-        registerBtn.onclick = () => { container.classList.add('active'); };
-        loginBtn.onclick = () => { container.classList.remove('active'); };
+        registerBtn.addEventListener('click', () => {
+            container.classList.add('active');
+        });
 
-        // Transitions using the "Sign Up" / "Login" links inside the forms
-        registerLink.onclick = (e) => { 
-            e.preventDefault();
-            container.classList.add('active'); 
-        };
-        loginLink.onclick = (e) => { 
-            e.preventDefault();
-            container.classList.remove('active'); 
-        };
+        loginBtn.addEventListener('click', () => {
+            container.classList.remove('active');
+        });
     </script>
 </body>
 </html>
